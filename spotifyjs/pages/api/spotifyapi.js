@@ -1,9 +1,9 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
-export default function handler(req, res) {
-  res.status(200).json({ name: 'John Doe' })
+export async function verifyLink(accessToken) {
+  accessToken = localStorage.getItem('access_token');
+  console.log(accessToken);
+  return accessToken
 }
-
-export function verifyLink() {}
 
 export function getArt(song) {}
