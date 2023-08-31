@@ -1,6 +1,6 @@
-import setAccessToken from "./api/token"
+import userAuth from "./api/token"
 
-setAccessToken();
+userAuth();
 
 export default function APIAccess() {
   return (<></>)
