@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['developer.spotify.com']
+    domains: ['developer.spotify.com', 'mosaic.scdn.co']
   }
 }
 

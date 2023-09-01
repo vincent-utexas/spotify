@@ -40,9 +40,9 @@
 }
 
 .button {
-  margin: 0.2rem;
   padding: 0.2rem;
   width: 100%;
+  font-family: var(--font-mono);
 }
 
 .button:hover {
@@ -221,12 +221,8 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  .vercelLogo {
-    filter: invert(1);
-  }
-
   .logo {
-    filter: invert(1) drop-shadow(0 0 0.3rem #ffffff70);
+    filter: -shadow(0 0 0.3rem #ffffff70);
   }
 }
 

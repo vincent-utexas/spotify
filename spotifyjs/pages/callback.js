@@ -4,16 +4,22 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
-import { verifyLink, getArt } from './api/spotifyapi';
+import { parseID, verifyLink, getPlaylist } from './api/spotifyapi';
 
 const inter = Inter({ subsets: ['latin'] })
+const defaultArt = 'https://developer.spotify.com/images/guidelines/design/icon2@2x.png'
+
+// This page handles the callback from Spotify's auth
+// Users will select a playlist to rank
 
 export default function Home() {
-    const [link, setLink] = useState('no album selected');
+    const [currentAlbum, setCurrentAlbum] = useState(undefined);
 
     function handleChangeLinks(e) {
-        setLink(e.target.value);
-    }
+        if (verifyLink(e.target.value)) {
+          getPlaylist(e.target.value).then(res => setCurrentAlbum(res));
+        }
+      }
 
     return (
         <>
@@ -34,15 +40,18 @@ export default function Home() {
             />
             <Image 
                 className={styles.logo}
-                src={'https://developer.spotify.com/images/guidelines/design/icon2@2x.png'}
+                src={currentAlbum && currentAlbum.hasOwnProperty('images')? currentAlbum.images[1].url: defaultArt}
                 width={250}
-                height={250}>
+                height={250}
+                alt='album image'
+            >
+
             </Image>
 
-            <span className={styles.description}>Current album: {link}</span>
+            <span className={styles.description}>Current album: {currentAlbum ? currentAlbum.name : ''}</span>
 
-            <Redirect text='go' page='' />
-            <button disabled className={styles.button}>tes</button>
+            <Redirect disabled={currentAlbum ? false : true} text='Rank random' page='/random.js' />
+            <Redirect disabled={currentAlbum ? false : true} text='Rank comprehensive' page='' />
             
             </section>
         </main>
@@ -50,10 +59,10 @@ export default function Home() {
   )
 }
 
-function Redirect({text, page}) {
+function Redirect({text, page, disabled}) {
   return (
-    <button className={styles.button}>
-      <Link href={page}> {text} </Link>
-    </button>
+    <Link href={page} className={styles.button}>
+      <button className={styles.button} disabled={disabled}> {text} </button>
+    </Link>
   )
 }

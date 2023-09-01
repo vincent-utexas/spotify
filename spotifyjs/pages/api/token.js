@@ -13,7 +13,7 @@ export default function userAuth() {
         // RETURNS: code (for API access), state (state param)
         generateCodeChallenge(codeVerifier).then(codeChallenge => {
             let state = generateRandomString(16);
-            let scope = 'user-read-private';
+            let scope = 'playlist-read-private playlist-read-collaborative user-library-read';
             localStorage.setItem('code_verifier', codeVerifier);
     
             let args = new URLSearchParams({
@@ -31,7 +31,6 @@ export default function userAuth() {
     }
 }
 
-
 function generateRandomString(length) {
     let text = '';
     let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -42,7 +41,7 @@ function generateRandomString(length) {
     return text;
   }
 
-  async function generateCodeChallenge(codeVerifier) {
+async function generateCodeChallenge(codeVerifier) {
     function base64encode(string) {
       return btoa(String.fromCharCode.apply(null, new Uint8Array(string)))
         .replace(/\+/g, '-')
