@@ -14,10 +14,14 @@ const defaultArt = 'https://developer.spotify.com/images/guidelines/design/icon2
 
 export default function Home() {
     const [currentAlbum, setCurrentAlbum] = useState(undefined);
+    console.log(currentAlbum);
 
     function handleChangeLinks(e) {
+      // If the link is valid, set it as the current album
+      // and save the ID in local storage
         if (verifyLink(e.target.value)) {
           getPlaylist(e.target.value).then(res => setCurrentAlbum(res));
+          localStorage.setItem('album', parseID(e.target.value));
         }
       }
 
@@ -40,7 +44,7 @@ export default function Home() {
             />
             <Image 
                 className={styles.logo}
-                src={currentAlbum && currentAlbum.hasOwnProperty('images')? currentAlbum.images[1].url: defaultArt}
+                src={currentAlbum && currentAlbum.hasOwnProperty('images')? currentAlbum.images[0].url: defaultArt}
                 width={250}
                 height={250}
                 alt='album image'
@@ -50,7 +54,7 @@ export default function Home() {
 
             <span className={styles.description}>Current album: {currentAlbum ? currentAlbum.name : ''}</span>
 
-            <Redirect disabled={currentAlbum ? false : true} text='Rank random' page='/random.js' />
+            <Redirect disabled={currentAlbum ? false : true} text='Rank random' page='/random' />
             <Redirect disabled={currentAlbum ? false : true} text='Rank comprehensive' page='' />
             
             </section>
@@ -59,6 +63,8 @@ export default function Home() {
   )
 }
 
+
+// TODO: fix Redirect disable code
 function Redirect({text, page, disabled}) {
   return (
     <Link href={page} className={styles.button}>

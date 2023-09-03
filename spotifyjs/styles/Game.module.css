@@ -1,0 +1,70 @@
+.description {
+    display: inherit;
+    justify-content: inherit;
+    align-items: inherit;
+    font-size: 0.85rem;
+    max-width: var(--max-width);
+    width: 100%;
+    z-index: 2;
+    font-family: var(--font-mono);
+    text-align: center;
+}
+
+.sticky {
+    position: sticky;
+    top: 0rem;
+    background-color: #000;
+    z-index: 999;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 1.2rem;
+    border-radius: var(--border-radius);
+    background: rgba(var(--card-rgb), 0);
+    border: 1px solid rgba(var(--card-border-rgb), 0);
+    transition: background 200ms, border 200ms;
+    width: 20rem;
+}
+
+.image:hover {
+    cursor: pointer;
+}
+
+.ranking {
+    overflow-y: scroll;
+    height: 30rem;
+}
+
+.audio:hover {
+    cursor: pointer;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex {
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    height: 100vh;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .card:hover {
+      background: rgba(var(--card-rgb), 0.1);
+      border: 1px solid rgba(var(--card-border-rgb), 0.15);
+    }
+}

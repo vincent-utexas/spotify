@@ -1,11 +1,15 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 const api = 'https://api.spotify.com/v1/';
 
+//! test: https://open.spotify.com/playlist/01gtMo6p7I1nf4FUEsV01J
+
 if (typeof window !== 'undefined') {
   setAccessToken();
 }
 
 export async function verifyLink(link) {
+  // @param: string
+  // returns: boolean
   let token = getAccessToken();
   link = parseID(link);
 
@@ -18,6 +22,8 @@ export async function verifyLink(link) {
 }
 
 export async function getPlaylist(id) {
+  // @param: playlist id
+  // returns: playlist object
   const token = getAccessToken();
   id = parseID(id);
   
@@ -31,6 +37,30 @@ export async function getPlaylist(id) {
     console.log('Error ' + error)
   });
 }
+
+export async function getTracksofPlaylist(id) {
+  // @param: playlist id
+  // returns: List[tracks]
+
+  const playlist = await getPlaylist(id);
+  let tracks = []
+  for (const track of playlist.tracks.items) {
+    tracks.push({
+      id: track.track.id,
+      album: track.track.album.name,
+      artist: track.track.artists[0].name,
+      name: track.track.name,
+      img: {
+        small: track.track.album.images[2].url,
+        large: track.track.album.images[0].url
+      },
+      preview: track.track.preview_url
+    })
+  }
+
+  return tracks;
+}
+
 
 export function parseID(link) {
   if (link.startsWith('https://')) {
