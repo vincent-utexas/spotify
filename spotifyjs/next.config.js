@@ -2,7 +2,20 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['developer.spotify.com', 'mosaic.scdn.co', 'i.scdn.co']
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.spotify.com'
+      },
+      {
+        protocol: 'https',
+        hostname: '**.spotifycdn.com'
+      },
+      {
+        protocol: 'https',
+        hostname: '**.scdn.co'
+      }
+    ],
   }
 }
 

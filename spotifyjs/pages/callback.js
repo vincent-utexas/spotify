@@ -14,7 +14,6 @@ const defaultArt = 'https://developer.spotify.com/images/guidelines/design/icon2
 
 export default function Home() {
     const [currentAlbum, setCurrentAlbum] = useState(undefined);
-    console.log(currentAlbum);
 
     function handleChangeLinks(e) {
       // If the link is valid, set it as the current album
@@ -54,8 +53,8 @@ export default function Home() {
 
             <span className={styles.description}>Current album: {currentAlbum ? currentAlbum.name : ''}</span>
 
-            <Redirect disabled={currentAlbum ? false : true} text='Rank random' page='/random' />
-            <Redirect disabled={currentAlbum ? false : true} text='Rank comprehensive' page='' />
+            <Redirect disabled={currentAlbum ? false : true} text='Rank random' page='/play_random' />
+            <Redirect disabled={currentAlbum ? false : true} text='Rank comprehensive' page='/play_comprehensive' />
             
             </section>
         </main>

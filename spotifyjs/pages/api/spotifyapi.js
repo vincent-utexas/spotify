@@ -47,9 +47,9 @@ export async function getTracksofPlaylist(id) {
   for (const track of playlist.tracks.items) {
     tracks.push({
       id: track.track.id,
-      album: track.track.album.name,
+      album: truncate(track.track.album.name),
       artist: track.track.artists[0].name,
-      name: track.track.name,
+      name: truncate(track.track.name),
       img: {
         small: track.track.album.images[2].url,
         large: track.track.album.images[0].url
@@ -61,6 +61,13 @@ export async function getTracksofPlaylist(id) {
   return tracks;
 }
 
+function truncate(str) {
+  if (str.length > 35) {
+    let substring = str.substring(0, 35);
+    return substring.substring(0, substring.lastIndexOf(' ')) + '...'
+  }
+  return str;
+}
 
 export function parseID(link) {
   if (link.startsWith('https://')) {

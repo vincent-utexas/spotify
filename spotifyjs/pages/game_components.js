@@ -1,33 +1,20 @@
 import Image from 'next/image';
 import styles from '../styles/Game.module.css';
-import { useState, useRef } from 'react';
 
-export function Track({ track, onClick }) {
-    const [playing, setPlaying] = useState(false);
-    let audio = useRef(new Audio(track.preview));
-
-    function toggle() {
-        if (playing) {
-            audio.current.pause();
-        } else {
-            audio.current.play();
-        }
-        setPlaying(!playing);
-    }
-
+export function Track({ track, onClick, onPlay, onMute }) {
     return (
         <Container>
-            <TrackHeader name={track.name + ' * ' + track.album} onClick={toggle} />
+            <TrackHeader name={track.name + ' * ' + track.album} onClick={onPlay} />
             <TrackArt
                 src={track.img.large}
-                onClick={() => {playing ? toggle() : null; onClick()}}
+                onClick={() => {onMute(); onClick()}}
             />
             <TrackFooter artist={track.artist}/>
         </Container>
     )
 }
 
-export function Ranking({rank}) {
+export function Ranking({ rank }) {
     rank = rank.toReversed();
     console.log(rank[0].preview);
     return (
@@ -39,6 +26,12 @@ export function Ranking({rank}) {
                 )
             })}
         </section>
+    )
+}
+
+export function Counter({ num }) {
+    return (
+        <div className={[styles.description, styles.counter].join(' ')}>{num}</div>
     )
 }
 
