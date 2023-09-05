@@ -1,22 +1,21 @@
 import Image from 'next/image';
 import styles from '../styles/Game.module.css';
 
-export function Track({ track, onClick, onPlay, onMute }) {
+export function Track({ track, onClick, onPlay, onMute, onHide }) {
     return (
         <Container>
-            <TrackHeader name={track.name + ' * ' + track.album} onClick={onPlay} />
+            <TrackHeader name={track.name + ' * ' + track.album} />
             <TrackArt
                 src={track.img.large}
                 onClick={() => {onMute(); onClick()}}
             />
-            <TrackFooter artist={track.artist}/>
+            <TrackFooter artist={track.artist} onClick={[onPlay, onHide]} />
         </Container>
     )
 }
 
 export function Ranking({ rank }) {
     rank = rank.toReversed();
-    console.log(rank[0].preview);
     return (
         <section className={styles.ranking}>
             <div className={[styles.sticky, styles.description].join(' ')}>Your rankings:</div>
@@ -35,18 +34,20 @@ export function Counter({ num }) {
     )
 }
 
-function TrackHeader({ name, onClick }) {
+function TrackHeader({ name }) {
     return (
-        <section className={[styles.description, styles.audio].join(' ')} onClick={onClick}>
+        <section className={styles.description}>
             {name}
         </section>
     )
 }
 
-function TrackFooter({ artist }) {
+function TrackFooter({ artist, onClick }) {
     return (
-        <section className={styles.description}>
-            {artist}
+        <section className={styles.footer}>
+            <p className={styles.description}>{artist}</p>
+            <p className={styles.audio} onClick={onClick[0]}>(play)</p>
+            <p className={styles.audio} onClick={onClick[1]}>(hide)</p>
         </section>
     )
 }
@@ -78,7 +79,7 @@ function RankRow({ track }) {
                 height={60}
                 alt='track'
             />
-            <p className={styles.description}>{track.name}</p>
+            <p className={styles.description}>{track.name} * {track.artist}</p>
             
         </div>
     )

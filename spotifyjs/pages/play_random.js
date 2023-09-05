@@ -50,18 +50,21 @@ export default function Game() {
     }
 
     function handlePlayAudio(track) {
-        switch (track) {
-            case 0:
-                audio.current[1].sound.pause();
-                audio.current[1].muted = true;
-                audio.current[track].sound.play();
-                audio.current[track].muted = false;
+        // @param: track [int] -- 0 for left , 1 for right
 
-            case 1:
-                audio.current[0].sound.pause();
-                audio.current[0].muted = true;
-                audio.current[track].sound.play();
-                audio.current[track].muted = false;    
+        if (track === 1 && audio.current[track].muted) { // play audio and mute other track
+            audio.current[track].sound.play();
+            audio.current[track].muted = false;
+            audio.current[0].sound.pause();
+            audio.current[0].muted = true;
+        } else if (track === 0 && audio.current[track].muted) { // play audio and mute other track
+            audio.current[track].sound.play();
+            audio.current[track].muted = false;
+            audio.current[1].sound.pause();
+            audio.current[1].muted = true;
+        } else { // mute track
+            audio.current[track].sound.pause();
+            audio.current[track].muted = true;
         }
     }
 

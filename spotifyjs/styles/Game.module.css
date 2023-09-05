@@ -10,6 +10,12 @@
     text-align: center;
 }
 
+.footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
 .counter {
     position: absolute;
     top: 50%;
@@ -44,8 +50,20 @@
     height: 30rem;
 }
 
+.audio {
+    display: inherit;
+    justify-content: inherit;
+    align-items: inherit;
+    font-size: 0.85rem;
+    max-width: var(--max-width);
+    z-index: 2;
+    font-family: var(--font-mono);
+}
+
 .audio:hover {
     cursor: pointer;
+    text-decoration: underline;
+    color: #d3d3d3;
 }
 
 .row {
@@ -59,7 +77,7 @@
 }
 
 .flex {
-    overflow: hidden;
+    overflow-y: hidden;
     display: flex;
     flex-direction: row;
     align-items: center;

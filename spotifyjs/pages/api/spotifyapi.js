@@ -30,6 +30,9 @@ export async function getPlaylist(id) {
   const playlist = await fetch(api + 'playlists/' + id, {
     method: "GET",
     headers: { Authorization: `Bearer ${token}`}
+  })
+  .catch(error => {
+    console.log('Error:' + error);
   });
 
   return await playlist.json()
