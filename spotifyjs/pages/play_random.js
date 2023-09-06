@@ -38,9 +38,8 @@ export default function Game() {
         ];
     })
 
-    function handleClick(id) {
-        // @param: id of saved track
-        let drop = activeTracks[0] === id ? activeTracks[1] : activeTracks[0]; //? get the track to be dropped
+    function handleClick(track) {
+        let drop = activeTracks[track === 0 ? 1 : 0];
         let next = tracks;
         drop = next.splice(tracks.indexOf(drop), 1)[0];
 
@@ -48,6 +47,16 @@ export default function Game() {
         setTracks(next);
         setActiveTracks(getRandomTracks(tracks));
     }
+
+    function handleHide(track) {
+        let index = tracks.indexOf(activeTracks[track]);
+        setRank([activeTracks[track], ...rank]);
+        let next = tracks;
+        next.splice(index, 1);
+
+        setTracks(next);
+        setActiveTracks(getRandomTracks(tracks));
+    };
 
     function handlePlayAudio(track) {
         // @param: track [int] -- 0 for left , 1 for right
@@ -80,7 +89,8 @@ export default function Game() {
                     <Track
                         track={activeTracks[0]}
                         key={activeTracks[0].id}
-                        onClick={() => handleClick(activeTracks[0])}
+                        onClick={() => handleClick(0)}
+                        onHide={() => handleHide(0)}
                         onPlay={() => handlePlayAudio(0)}
                         onMute={mute}
                     />
@@ -90,7 +100,8 @@ export default function Game() {
                     <Track
                         track={activeTracks[1]}
                         key={activeTracks[1].id}
-                        onClick={() => handleClick(activeTracks[1])}
+                        onClick={() => handleClick(1)}
+                        onHide={() => handleHide(1)}
                         onPlay={() => handlePlayAudio(1)}
                         onMute={mute}
                     />

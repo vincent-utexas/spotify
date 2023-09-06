@@ -19,9 +19,7 @@ export default function Game() {
             {
                 tracklist: pairAll(response),
                 tracks: response,
-                index: 0,
-                ignore: new Set(),
-                seen: 0,
+                index: 0
             });
         }
 
@@ -49,13 +47,17 @@ export default function Game() {
         ];
     })
 
-    function handleClick(id) {
+    function handleClick(track) {
         // @param: id of saved track
-        let save = activeTracks[0] === id ? activeTracks[0] : activeTracks[1]; //? get the track to be saved
-        save.rank++;
-        tracks.seen++;
-        console.log(tracks.seen +tracks.ignore.size);
-        seekNextTrack();
+        activeTracks[track].rank++;
+        tracks.index++;
+        setActiveTracks(tracks.tracklist[tracks.index]);
+    }
+
+    function handleHide(track) {
+        activeTracks[track].rank = -1;
+        tracks.index++;
+        removeTrack(tracks.tracklist, activeTracks[track]);
         setActiveTracks(tracks.tracklist[tracks.index]);
     }
 
@@ -78,21 +80,6 @@ export default function Game() {
         }
     }
 
-    function handleHide(track) {
-        activeTracks[track].rank = -1;
-        tracks.index++;
-        removeTrack(tracks.tracklist, activeTracks[track], tracks.ignore);
-        seekNextTrack();
-        setActiveTracks(tracks.tracklist[tracks.index]);
-    }
-
-    function seekNextTrack() {
-        tracks.index++;
-        while (tracks.ignore.has(tracks.index) && tracks.index < tracks.tracklist.length) {
-            tracks.index++;
-        }
-    }
-
     function mute() {
         audio.current[0].sound.pause();
         audio.current[1].sound.pause();
@@ -105,7 +92,7 @@ export default function Game() {
                     <Track
                         track={activeTracks[0]}
                         key={activeTracks[0].id}
-                        onClick={() => handleClick(activeTracks[0])}
+                        onClick={() => handleClick(0)}
                         onPlay={() => handlePlayAudio(0)}
                         onMute={mute}
                         onHide={() => handleHide(0)}
@@ -113,12 +100,14 @@ export default function Game() {
                 }
                 {(tracks && tracks.index < tracks.tracklist.length-1 ) && 
                         <Counter
-                            num={tracks.tracklist.length-1 - tracks.seen - tracks.ignore.size} />}
+                            num={tracks.tracklist.length - 1 - tracks.index }
+                        />
+                }
                 {activeTracks[1] && 
                     <Track
                         track={activeTracks[1]}
                         key={activeTracks[1].id}
-                        onClick={() => handleClick(activeTracks[1])}
+                        onClick={() => handleClick(1)}
                         onPlay={() => handlePlayAudio(1)}
                         onMute={mute}
                         onHide={() => handleHide(1)}
@@ -135,10 +124,10 @@ function sortRank(list) {
     return list;
 }
 
-function removeTrack(tracklist, track, ignore) {
-    for (const pair of tracklist) {
+function removeTrack(tracklist, track) {
+    for (const [i, pair] of tracklist.entries()) {
         if (pair.includes(track)) {
-            ignore.add(tracklist.indexOf(pair));
+            tracklist.splice(i, 1);
         }
     }
 }
