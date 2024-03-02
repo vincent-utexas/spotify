@@ -37,7 +37,7 @@ export default function Game() {
             }
         ];
     })
-
+    
     function handleClick(track) {
         let drop = activeTracks[track === 0 ? 1 : 0];
         let next = tracks;
