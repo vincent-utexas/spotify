@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import styles from '../styles/Game.module.css';
 
-export function Track({ track, onClick, onPlay, onMute, onHide }) {
+function Track({ track, onClick, onPlay, onMute, onHide }) {
     return (
         <Container>
             <TrackHeader name={track.name + ' * ' + track.album} />
@@ -14,7 +14,7 @@ export function Track({ track, onClick, onPlay, onMute, onHide }) {
     )
 }
 
-export function Ranking({ rank }) {
+function Ranking({ rank }) {
     rank = rank.toReversed();
     return (
         <section className={styles.ranking}>
@@ -28,7 +28,7 @@ export function Ranking({ rank }) {
     )
 }
 
-export function Counter({ num }) {
+function Counter({ num }) {
     return (
         <div className={[styles.description, styles.counter].join(' ')}>{num}</div>
     )
@@ -62,8 +62,8 @@ function TrackArt({src, onClick}) {
             className={styles.image}
             src={src}
             onClick={onClick}
-            width={600}
-            height={600}
+            width={550}
+            height={550}
             alt="track image"
         />
     )
@@ -91,8 +91,10 @@ function Container(props) {
     )
 }
 
-export function Flex(props) {
+function Flex(props) {
     return (
         <main className={styles.flex}>{props.children}</main>
     )
 }
+
+export default {Track, Ranking, Counter, Flex};

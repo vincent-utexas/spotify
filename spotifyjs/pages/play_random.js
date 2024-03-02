@@ -1,4 +1,4 @@
-import { Track, Flex, Ranking, Counter } from "./game_components";
+import components from "../components/game_components";
 import { getTracksofPlaylist } from "./api/spotifyapi";
 import { useState, useEffect, useRef } from "react";
 
@@ -6,7 +6,7 @@ export default function Game() {
     const [tracks, setTracks] = useState(null); // Array[object] for tracks (id, album, name, img, preview)
     const [rank, setRank] = useState([]); // Array[str] for tracks dropped first --> last 
     const [activeTracks, setActiveTracks] = useState([null, null]); // Array[str] for the active tracks
-    const audio = useRef([null, null]); // Array[audio] for audio
+    const audio = useRef([null, null]); // Array[index] for audio
 
     // Initializers
     useEffect( () => {
@@ -84,9 +84,9 @@ export default function Game() {
 
     return (
         <>
-            <Flex>
+            <components.Flex>
                 {activeTracks[0] && 
-                    <Track
+                    <components.Track
                         track={activeTracks[0]}
                         key={activeTracks[0].id}
                         onClick={() => handleClick(0)}
@@ -95,9 +95,9 @@ export default function Game() {
                         onMute={mute}
                     />
                 }
-                {(tracks && tracks.length > 1) && <Counter num={tracks.length-1} />}
+                {(tracks && tracks.length > 1) && <components.Counter num={tracks.length-1} />}
                 {activeTracks[1] && 
-                    <Track
+                    <components.Track
                         track={activeTracks[1]}
                         key={activeTracks[1].id}
                         onClick={() => handleClick(1)}
@@ -106,8 +106,8 @@ export default function Game() {
                         onMute={mute}
                     />
                 }
-                {(tracks && tracks.length <= 1) && <Ranking rank={rank.concat(tracks)} />}
-            </Flex>
+                {(tracks && tracks.length <= 1) && <components.Ranking rank={rank.concat(tracks)} />}
+            </components.Flex>
         </>
     )
 }

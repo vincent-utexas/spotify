@@ -1,5 +1,5 @@
 const CLIENT_ID = '0526ab1242444ecc8057705be8ad0777';
-const redirectUri = 'http://localhost:3000/callback';
+const REDIRECT_URI = 'http://localhost:3000/callback';
 
 
 export default function userAuth() {
@@ -10,7 +10,7 @@ export default function userAuth() {
         // Generate PKCE code challenge
         // then redirect to Spotify's auth server login page
         // for the user to grant permissions
-        // RETURNS: code (for API access), state (state param)
+        // @return code (for API access), state (state param)
         generateCodeChallenge(codeVerifier).then(codeChallenge => {
             let state = generateRandomString(16);
             let scope = 'playlist-read-private playlist-read-collaborative user-library-read';
@@ -20,7 +20,7 @@ export default function userAuth() {
                 response_type: 'code',
                 client_id: CLIENT_ID,
                 scope: scope,
-                redirect_uri: redirectUri,
+                redirect_uri: REDIRECT_URI,
                 state: state,
                 code_challenge_method: 'S256',
                 code_challenge: codeChallenge
@@ -39,7 +39,7 @@ function generateRandomString(length) {
       text += possible.charAt(Math.floor(Math.random() * possible.length));
     }
     return text;
-  }
+}
 
 async function generateCodeChallenge(codeVerifier) {
     function base64encode(string) {
@@ -54,5 +54,5 @@ async function generateCodeChallenge(codeVerifier) {
     const digest = await window.crypto.subtle.digest('SHA-256', data);
   
     return base64encode(digest);
-  }
+}
   

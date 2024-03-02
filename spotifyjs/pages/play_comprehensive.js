@@ -1,4 +1,4 @@
-import { Track, Flex, Ranking, Counter } from "./game_components";
+import components from "../components/game_components";
 import { getTracksofPlaylist } from "./api/spotifyapi";
 import { useState, useEffect, useRef } from "react";
 
@@ -13,9 +13,9 @@ export default function Game() {
         const fetchTracks = async () => {
             const response = await getTracksofPlaylist(album);
 
-            // Add rank to each track
-           response.forEach(track => track.rank = 0);
-           setTracks(
+            // Initialize rank for each track
+            response.forEach(track => track.rank = 0);
+            setTracks(
             {
                 tracklist: pairAll(response),
                 tracks: response,
@@ -47,9 +47,15 @@ export default function Game() {
         ];
     })
 
+    /**
+     * Increment the rank of a track, then prepare the next
+     * tracks to compare.
+     * @param {string} track the ID of the track 
+     */
     function handleClick(track) {
-        // @param: id of saved track
         activeTracks[track].rank++;
+
+        // Increment the index of the current track (find the next track to compare)
         tracks.index++;
         setActiveTracks(tracks.tracklist[tracks.index]);
     }
@@ -87,9 +93,9 @@ export default function Game() {
 
     return (
         <>
-            <Flex>
+            <components.Flex>
                 {activeTracks[0] && 
-                    <Track
+                    <components.Track
                         track={activeTracks[0]}
                         key={activeTracks[0].id}
                         onClick={() => handleClick(0)}
@@ -99,12 +105,12 @@ export default function Game() {
                     />
                 }
                 {(tracks && tracks.index < tracks.tracklist.length-1 ) && 
-                        <Counter
+                        <components.Counter
                             num={tracks.tracklist.length - 1 - tracks.index }
                         />
                 }
                 {activeTracks[1] && 
-                    <Track
+                    <components.Track
                         track={activeTracks[1]}
                         key={activeTracks[1].id}
                         onClick={() => handleClick(1)}
@@ -113,8 +119,8 @@ export default function Game() {
                         onHide={() => handleHide(1)}
                     />
                 }
-                {(tracks && tracks.index >= tracks.tracklist.length-1) && <Ranking rank={sortRank(tracks.tracks)} />}
-            </Flex>
+                {(tracks && tracks.index >= tracks.tracklist.length-1) && <components.Ranking rank={sortRank(tracks.tracks)} />}
+            </components.Flex>
         </>
     )
 }

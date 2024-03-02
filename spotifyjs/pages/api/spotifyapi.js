@@ -1,33 +1,36 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-const api = 'https://api.spotify.com/v1/';
-
-//! test: https://open.spotify.com/playlist/01gtMo6p7I1nf4FUEsV01J
+const API = 'https://api.spotify.com/v1/';
 
 if (typeof window !== 'undefined') {
   setAccessToken();
 }
 
+/**
+ * Check if the link is a valid Spotify ID
+ * @param {string} link
+ * @returns {boolean} response.ok
+ */
 export async function verifyLink(link) {
-  // @param: string
-  // returns: boolean
   let token = getAccessToken();
   link = parseID(link);
 
-  const response = await fetch(api + 'playlists/' + link, {
-    method: "GET",
-    headers: { Authorization: `Bearer ${token}` } 
-  });
-
+  const response = await fetch(API + 'playlists/' + link, {
+          method: "HEAD",
+          headers: { Authorization: `Bearer ${token}` } 
+      });
+      
   return response.ok;
 }
 
+/**
+ * Get the playlist associated with the ID
+ * @param {string} id 
+ * @returns {object}
+ */
 export async function getPlaylist(id) {
-  // @param: playlist id
-  // returns: playlist object
   const token = getAccessToken();
   id = parseID(id);
   
-  const playlist = await fetch(api + 'playlists/' + id, {
+  const playlist = await fetch(API + 'playlists/' + id, {
     method: "GET",
     headers: { Authorization: `Bearer ${token}`}
   })
@@ -41,10 +44,12 @@ export async function getPlaylist(id) {
   });
 }
 
+/**
+ * Get the tracks of an album
+ * @param {string} id 
+ * @returns {Array[object]} tracks {id, album, artist, name, img, preview}
+ */
 export async function getTracksofPlaylist(id) {
-  // @param: playlist id
-  // returns: List[tracks]
-
   const playlist = await getPlaylist(id);
   let tracks = []
   for (const track of playlist.tracks.items) {
@@ -64,6 +69,11 @@ export async function getTracksofPlaylist(id) {
   return tracks;
 }
 
+/**
+ * Truncate strings over 35 characters, used for long album/track names
+ * @param {string} string to truncate
+ * @returns {string} a truncated string with trailing ellipses (...)
+ */
 function truncate(str) {
   if (str.length > 35) {
     let substring = str.substring(0, 35);
@@ -72,20 +82,30 @@ function truncate(str) {
   return str;
 }
 
+/**
+ * Parse the album ID from a link
+ * @param {string} link 
+ * @returns {string} parsed ID
+ */
 export function parseID(link) {
   if (link.startsWith('https://')) {
+    // ID begins after 'playlist/'
     link = link.slice(link.indexOf('playlist/') + 9);
   }
 
   return link;
 }
 
+/**
+ * Get the access token from local memory
+ * @returns {string} access_token
+ */
 function getAccessToken() {
   return localStorage.getItem('access_token')
 }
 
 function setAccessToken() {
-  let redirectUri = 'http://localhost:3000/callback';
+  const REDIRECT_URI = 'http://localhost:3000/callback';
   const CLIENT_ID = '0526ab1242444ecc8057705be8ad0777';
 
   // Parse the URL and save the code param
@@ -97,7 +117,7 @@ function setAccessToken() {
   const body = new URLSearchParams({
       grant_type: 'authorization_code',
       code: code,
-      redirect_uri: redirectUri,
+      redirect_uri: REDIRECT_URI,
       client_id: CLIENT_ID,
       code_verifier: codeVerifier
   });
@@ -105,50 +125,19 @@ function setAccessToken() {
   // Store the access token in local storage
   // GET access token by localStorage.getItem('access_token')
   const response = fetch('https://accounts.spotify.com/api/token', {
-  method: 'POST',
-  headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-  },
-      body: body
-  })
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+      },
+          body: body
+      }
+  )
   .then(response => {
       if (!response.ok) {
-      throw new Error('HTTP status ' + response.status);
+          throw new Error('HTTP status ' + response.status);
       }
       return response.json();
   })
-  .then(data => {
-      localStorage.setItem('access_token', data.access_token);
-      localStorage.setItem('refresh_token', data.refresh_token);
-  })
-  .catch(error => {
-      console.error('Error:', error);
-  });
-}
-
-function refreshToken() {
-  const CLIENT_ID = '0526ab1242444ecc8057705be8ad0777';
-  let refresh_token = localStorage.getItem('refresh_token');
-
-  const body = new URLSearchParams({
-    grant_type: 'refresh_token',
-    refresh_token: refresh_token,
-    client_id: CLIENT_ID
-  });
-
-  const response = fetch('https://accounts.spotify.com/api/token', {
-  method: 'POST',
-  headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-  },
-      body: body
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('HTTP status ' + response.status);
-      }
-      return response.json();
-    })
   .then(data => {
       localStorage.setItem('access_token', data.access_token);
       localStorage.setItem('refresh_token', data.refresh_token);
