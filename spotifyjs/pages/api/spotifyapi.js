@@ -1,4 +1,4 @@
-const API = 'https://api.spotify.com/v1/';
+const API = process.env.NEXT_PUBLIC_API;
 
 if (typeof window !== 'undefined') {
   setAccessToken();
@@ -105,8 +105,8 @@ function getAccessToken() {
 }
 
 function setAccessToken() {
-  const REDIRECT_URI = 'http://localhost:3000/callback';
-  const CLIENT_ID = process.env.CLIENT_ID;
+  const REDIRECT_URI = process.env.NEXT_PUBLIC_REDIRECT_URI;
+  const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID;
 
   // Parse the URL and save the code param
   const urlParams = new URLSearchParams(window.location.search);

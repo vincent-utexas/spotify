@@ -1,5 +1,5 @@
-const CLIENT_ID = process.env.CLIENT_ID;
-const REDIRECT_URI = 'http://spotify-rank.vercel.app/callback';
+const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID;
+const REDIRECT_URI = process.env.NEXT_PUBLIC_REDIRECT_URI;
 
 
 export default function userAuth() {
