@@ -21,4 +21,20 @@ const nextConfig = {
 
 module.exports = {
   distDir: 'build',
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.spotify.com'
+      },
+      {
+        protocol: 'https',
+        hostname: '**.spotifycdn.com'
+      },
+      {
+        protocol: 'https',
+        hostname: '**.scdn.co'
+      }
+    ],
+  }
 }
