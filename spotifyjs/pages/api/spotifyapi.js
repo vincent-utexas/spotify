@@ -1,6 +1,7 @@
 const API = process.env.NEXT_PUBLIC_API;
 
 if (typeof window !== 'undefined') {
+  refreshToken();
   setAccessToken();
 }
 
@@ -138,6 +139,38 @@ function setAccessToken() {
       }
       return response.json();
   })
+  .then(data => {
+      localStorage.setItem('access_token', data.access_token);
+      localStorage.setItem('refresh_token', data.refresh_token);
+  })
+  .catch(error => {
+      console.error('Error:', error);
+  });
+}
+
+function refreshToken() {
+  const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID;
+  let refresh_token = localStorage.getItem('refresh_token');
+
+  const body = new URLSearchParams({
+    grant_type: 'refresh_token',
+    refresh_token: refresh_token,
+    client_id: CLIENT_ID
+  });
+
+  const response = fetch('https://accounts.spotify.com/api/token', {
+  method: 'POST',
+  headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+  },
+      body: body
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('HTTP status ' + response.status);
+      }
+      return response.json();
+    })
   .then(data => {
       localStorage.setItem('access_token', data.access_token);
       localStorage.setItem('refresh_token', data.refresh_token);
