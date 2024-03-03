@@ -106,7 +106,7 @@ function getAccessToken() {
 
 function setAccessToken() {
   const REDIRECT_URI = 'http://localhost:3000/callback';
-  const CLIENT_ID = '0526ab1242444ecc8057705be8ad0777';
+  const CLIENT_ID = process.env.CLIENT_ID;
 
   // Parse the URL and save the code param
   const urlParams = new URLSearchParams(window.location.search);
