@@ -33,8 +33,9 @@ export default function Game() {
     }, [tracks])
 
     useEffect( () => {
-        let urls = [activeTracks[0] && activeTracks[0].preview,
-                    activeTracks[1] && activeTracks[1].preview];
+        //! Need a better way to handle the activeTracks runtime error
+        let urls = [activeTracks && activeTracks[0] && activeTracks[0].preview,
+                    activeTracks && activeTracks[1] && activeTracks[1].preview];
         audio.current = [
             {
                 sound: new Audio(urls[0]),
@@ -63,26 +64,28 @@ export default function Game() {
     function handleHide(track) {
         activeTracks[track].rank = -1;
         tracks.index++;
+        mute();
         removeTrack(tracks.tracklist, activeTracks[track]);
         setActiveTracks(tracks.tracklist[tracks.index]);
     }
 
-    function handlePlayAudio(track) {
-        // @param: track [int] -- 0 for left , 1 for right
+    function handlePlayAudio(_this, other) {
+        let thisTrack = audio.current[_this];
+        let otherTrack = audio.current[other];
 
-        if (track === 1 && audio.current[track].muted) { // play audio and mute other track
-            audio.current[track].sound.play();
-            audio.current[track].muted = false;
-            audio.current[0].sound.pause();
-            audio.current[0].muted = true;
-        } else if (track === 0 && audio.current[track].muted) { // play audio and mute other track
-            audio.current[track].sound.play();
-            audio.current[track].muted = false;
-            audio.current[1].sound.pause();
-            audio.current[1].muted = true;
-        } else { // mute track
-            audio.current[track].sound.pause();
-            audio.current[track].muted = true;
+        if (thisTrack.muted) {
+            // Play this track
+            thisTrack.sound.play();
+            thisTrack.muted = false;
+
+            // Mute the other track
+            otherTrack.sound.pause();
+            otherTrack.muted = true;
+        } else {
+            // This track is already playing
+            // Let's mute this track
+            thisTrack.sound.pause();
+            thisTrack.muted = true;
         }
     }
 
@@ -91,35 +94,40 @@ export default function Game() {
         audio.current[1].sound.pause();
     }
 
+    // Make sure tracks exists before computing
+    let tracksRemaining = tracks && tracks.tracklist.length - 1;
+
     return (
         <>
             <components.Flex>
-                {activeTracks[0] && 
+                {activeTracks && activeTracks[0] && 
                     <components.Track
                         track={activeTracks[0]}
                         key={activeTracks[0].id}
                         onClick={() => handleClick(0)}
-                        onPlay={() => handlePlayAudio(0)}
+                        onPlay={() => handlePlayAudio(0, 1)}
                         onMute={mute}
                         onHide={() => handleHide(0)}
                     />
                 }
-                {(tracks && tracks.index < tracks.tracklist.length-1 ) && 
+
+                {(tracks && tracks.index < tracksRemaining ) && 
                         <components.Counter
-                            num={tracks.tracklist.length - 1 - tracks.index }
+                            num={tracksRemaining - tracks.index }
                         />
                 }
-                {activeTracks[1] && 
+                
+                {activeTracks && activeTracks[1] && 
                     <components.Track
                         track={activeTracks[1]}
                         key={activeTracks[1].id}
                         onClick={() => handleClick(1)}
-                        onPlay={() => handlePlayAudio(1)}
+                        onPlay={() => handlePlayAudio(1, 0)}
                         onMute={mute}
                         onHide={() => handleHide(1)}
                     />
                 }
-                {(tracks && tracks.index >= tracks.tracklist.length-1) && <components.Ranking rank={sortRank(tracks.tracks)} />}
+                {(tracks && tracks.index >= tracksRemaining) && <components.Ranking rank={sortRank(tracks.tracks)} />}
             </components.Flex>
         </>
     )
@@ -130,6 +138,7 @@ function sortRank(list) {
     return list;
 }
 
+//! This function is not doing its job
 function removeTrack(tracklist, track) {
     for (const [i, pair] of tracklist.entries()) {
         if (pair.includes(track)) {

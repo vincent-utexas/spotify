@@ -9,7 +9,7 @@ function Track({ track, onClick, onPlay, onMute, onHide }) {
                 src={track.img.large}
                 onClick={() => {onMute(); onClick()}}
             />
-            <TrackFooter artist={track.artist} onClick={[onPlay, onHide]} />
+            <TrackFooter artist={track.artist} onPlay={onPlay} onHide={onHide} />
         </Container>
     )
 }
@@ -42,12 +42,12 @@ function TrackHeader({ name }) {
     )
 }
 
-function TrackFooter({ artist, onClick }) {
+function TrackFooter({ artist, onPlay, onHide }) {
     return (
         <section className={styles.footer}>
             <p className={styles.description}>{artist}</p>
-            <p className={styles.audio} onClick={onClick[0]}>(play)</p>
-            <p className={styles.audio} onClick={onClick[1]}>(hide)</p>
+            <p className={styles.audio_button} onClick={onPlay}>(play)</p>
+            <p className={styles.audio_button} onClick={onHide}>(hide)</p>
         </section>
     )
 }
@@ -58,13 +58,10 @@ function TrackArt({src, onClick}) {
     }
 
     return (
-        <Image
+        <img
             className={styles.image}
             src={src}
             onClick={onClick}
-            width={550}
-            height={550}
-            alt="track image"
         />
     )
 

@@ -4,10 +4,11 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { Inter } from 'next/font/google';
 import styles from '@/styles/Home.module.css';
-import { parseID, verifyLink, getPlaylist } from './api/spotifyapi';
+import { verifyLink, getPlaylist } from './api/spotifyapi';
+import { parseID } from './api/tools';
+import classNames from 'classnames';
 
-const inter = Inter({ subsets: ['latin'] })
-const DEFAULT_ART = 'https://developer.spotify.com/images/guidelines/design/icon2@2x.png'
+const inter = Inter({ subsets: ['latin'] });
 
 // This page handles the callback from Spotify's auth
 // Users will select a playlist to rank
@@ -28,6 +29,7 @@ export default function Home() {
         localStorage.setItem('album', parseID(e.target.value));
       } else {
         setCurrentAlbum(undefined);
+        localStorage.setItem('album', "");
       }
     }
 
@@ -37,6 +39,21 @@ export default function Home() {
         <Link href={page} className={styles.input}>
           <button className={styles.button} disabled={disabled}> {text} </button>
         </Link>
+      )
+    }
+
+    // React component to display tracklist information
+    // or visually cue user that the a tracklist does not exist
+    function TracklistDescription() {
+      const classes = classNames({
+        [styles.description]: true,
+        [styles.text_shake]: !currentAlbum,
+      });
+
+      return (
+        <>
+          <span className={classes}>Current tracklist: {currentAlbum ? currentAlbum.name : "none"} </span>
+        </>
       )
     }
 
@@ -75,17 +92,31 @@ export default function Home() {
               <input 
                   type='text'
                   className={styles.input}
-                  onChange={(e) => looksLikeLink(e) ? handleChangeLinks(e) : null} 
+                  onChange={(e) => {if (looksLikeLink(e)) handleChangeLinks(e)}} 
               />
 
               {/* The tracklist cover and title */}
-              <Image 
+              {currentAlbum && 
+                <Image 
                   className={styles.logo}
-                  src={currentAlbum && currentAlbum.hasOwnProperty('images') ? currentAlbum.images[0].url: DEFAULT_ART}
+                  src={currentAlbum.images[0].url}
+                  alt=""
                   width={250}
                   height={250}
-              />
-              <span className={styles.description}>Current album: {currentAlbum ? currentAlbum.name : 'No tracklist found'}</span>
+                />
+              }
+
+              {!currentAlbum &&
+                <img
+                  className={styles.logo}
+                  width={250}
+                  height={250}
+                />
+              }
+
+              {/* Text for current tracklist */}
+              <TracklistDescription />
+
 
               {/* Redirect buttons to play the game */}
               <Redirect disabled={currentAlbum ? false : true} text='Rank random' page='/play_random' />

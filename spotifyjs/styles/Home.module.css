@@ -122,6 +122,30 @@
   width: 100%;
   height: 100%;
 }
+
+.text_shake {
+  animation: text_shake_animation 0.4s;
+}
+
+/* Text-shake animation */
+@keyframes text_shake_animation {
+  0% {
+    transform: translateX(4px);
+  }
+
+  25% {
+    transform: translateX(-4px);
+  }
+
+  50% {
+    transform: translateX(4px);
+  }
+
+  100% {
+    transform: none;
+  }
+}
+
 /* Enable hover only on non-touch devices */
 @media (hover: hover) and (pointer: fine) {
   .card:hover {

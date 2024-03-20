@@ -53,27 +53,29 @@ export default function Game() {
         setRank([activeTracks[track], ...rank]);
         let next = tracks;
         next.splice(index, 1);
+        mute();
 
         setTracks(next);
         setActiveTracks(getRandomTracks(tracks));
     };
 
-    function handlePlayAudio(track) {
-        // @param: track [int] -- 0 for left , 1 for right
+    function handlePlayAudio(_this, other) {
+        let thisTrack = audio.current[_this];
+        let otherTrack = audio.current[other];
 
-        if (track === 1 && audio.current[track].muted) { // play audio and mute other track
-            audio.current[track].sound.play();
-            audio.current[track].muted = false;
-            audio.current[0].sound.pause();
-            audio.current[0].muted = true;
-        } else if (track === 0 && audio.current[track].muted) { // play audio and mute other track
-            audio.current[track].sound.play();
-            audio.current[track].muted = false;
-            audio.current[1].sound.pause();
-            audio.current[1].muted = true;
-        } else { // mute track
-            audio.current[track].sound.pause();
-            audio.current[track].muted = true;
+        if (thisTrack.muted) {
+            // Play this track
+            thisTrack.sound.play();
+            thisTrack.muted = false;
+
+            // Mute the other track
+            otherTrack.sound.pause();
+            otherTrack.muted = true;
+        } else {
+            // This track is already plaing
+            // Let's mute this track
+            thisTrack.sound.pause();
+            thisTrack.muted = true;
         }
     }
 
@@ -91,7 +93,7 @@ export default function Game() {
                         key={activeTracks[0].id}
                         onClick={() => handleClick(0)}
                         onHide={() => handleHide(0)}
-                        onPlay={() => handlePlayAudio(0)}
+                        onPlay={() => handlePlayAudio(0, 1)}
                         onMute={mute}
                     />
                 }
@@ -102,7 +104,7 @@ export default function Game() {
                         key={activeTracks[1].id}
                         onClick={() => handleClick(1)}
                         onHide={() => handleHide(1)}
-                        onPlay={() => handlePlayAudio(1)}
+                        onPlay={() => handlePlayAudio(1, 0)}
                         onMute={mute}
                     />
                 }

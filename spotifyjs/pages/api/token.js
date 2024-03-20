@@ -1,5 +1,5 @@
-const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID;
 const REDIRECT_URI = process.env.NEXT_PUBLIC_REDIRECT_URI;
+const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID;
 
 
 export default function userAuth() {

@@ -1,4 +1,8 @@
+import { truncate, parseID } from "./tools";
+
 const API = process.env.NEXT_PUBLIC_API;
+const REDIRECT_URI = process.env.NEXT_PUBLIC_REDIRECT_URI;
+const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID;
 
 if (typeof window !== 'undefined') {
   refreshToken();
@@ -14,10 +18,11 @@ export async function verifyLink(link) {
   let token = getAccessToken();
   link = parseID(link);
 
-  const response = await fetch(API + 'playlists/' + link, {
-          method: "HEAD",
-          headers: { Authorization: `Bearer ${token}` } 
-      });
+  const response = await fetch(API + 'playlists/' + link, 
+  {
+    method: "HEAD",
+    headers: { Authorization: `Bearer ${token}` } 
+  });
       
   return response.ok;
 }
@@ -31,7 +36,8 @@ export async function getPlaylist(id) {
   const token = getAccessToken();
   id = parseID(id);
   
-  const playlist = await fetch(API + 'playlists/' + id, {
+  const playlist = await fetch(API + 'playlists/' + id, 
+  {
     method: "GET",
     headers: { Authorization: `Bearer ${token}`}
   })
@@ -41,7 +47,7 @@ export async function getPlaylist(id) {
 
   return await playlist.json()
   .catch(error => { // catch syntax error
-    console.log('Error ' + error)
+    console.log('Error: ' + error)
   });
 }
 
@@ -54,47 +60,22 @@ export async function getTracksofPlaylist(id) {
   const playlist = await getPlaylist(id);
   let tracks = []
   for (const track of playlist.tracks.items) {
-    tracks.push({
+    tracks.push(
+    {
       id: track.track.id,
       album: truncate(track.track.album.name),
       artist: track.track.artists[0].name,
       name: truncate(track.track.name),
-      img: {
+      img: 
+      {
         small: track.track.album.images[2].url,
         large: track.track.album.images[0].url
       },
       preview: track.track.preview_url
-    })
+    });
   }
 
   return tracks;
-}
-
-/**
- * Truncate strings over 35 characters, used for long album/track names
- * @param {string} string to truncate
- * @returns {string} a truncated string with trailing ellipses (...)
- */
-function truncate(str) {
-  if (str.length > 35) {
-    let substring = str.substring(0, 35);
-    return substring.substring(0, substring.lastIndexOf(' ')) + '...'
-  }
-  return str;
-}
-
-/**
- * Parse the album ID from a link
- * @param {string} link 
- * @returns {string} parsed ID
- */
-export function parseID(link) {
-  if (link.startsWith('https://')) {
-    // ID begins after 'playlist/'
-    link = link.slice(link.indexOf('playlist/') + 9);
-  }
-
-  return link;
 }
 
 /**
@@ -106,9 +87,6 @@ function getAccessToken() {
 }
 
 function setAccessToken() {
-  const REDIRECT_URI = process.env.NEXT_PUBLIC_REDIRECT_URI;
-  const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID;
-
   // Parse the URL and save the code param
   const urlParams = new URLSearchParams(window.location.search);
   let code = urlParams.get('code');
@@ -149,7 +127,6 @@ function setAccessToken() {
 }
 
 function refreshToken() {
-  const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID;
   let refresh_token = localStorage.getItem('refresh_token');
 
   const body = new URLSearchParams({
