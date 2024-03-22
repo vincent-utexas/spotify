@@ -79,7 +79,7 @@ export default function Home() {
               <meta name="viewport" content="width=device-width, initial-scale=1" />
           </Head>
 
-          <main className={`${styles.main} ${inter.className}`}>
+          <main className={`${styles.main}`}>
             
               {/* Heading and input box, make sure input exists before checking link */}
               <section className={styles.card}>
