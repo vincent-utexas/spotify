@@ -2,13 +2,10 @@ import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
-import { Inter } from 'next/font/google';
 import styles from '@/styles/Home.module.css';
 import { verifyLink, getPlaylist } from './api/spotifyapi';
 import { parseID } from './api/tools';
 import classNames from 'classnames';
-
-const inter = Inter({ subsets: ['latin'] });
 
 // This page handles the callback from Spotify's auth
 // Users will select a playlist to rank
